@@ -1,0 +1,1 @@
+first_stage_model/vqgan_ckpt/last.ckpt filter=lfs diff=lfs merge=lfs -text
