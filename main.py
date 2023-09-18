@@ -601,10 +601,14 @@ if __name__ == "__main__":
             if trainer.global_rank == 0:
                 import pudb; pudb.set_trace()
 
-        import signal
-        signal.signal(signal.SIGUSR1, melk)
-        signal.signal(signal.SIGUSR2, divein)
-
+    
+        #Win10 unsoport signal and NCCL
+        ##################################################
+        # import signal
+        # signal.signal(signal.SIGUSR1, melk)
+        # signal.signal(signal.SIGUSR2, divein)
+        os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
+        ##################################################
         # run
         if opt.train:
             try:

@@ -2,3 +2,4 @@
 /data/latent/ffhq
 __pycache__/
 /.vscode/
+/logs/
