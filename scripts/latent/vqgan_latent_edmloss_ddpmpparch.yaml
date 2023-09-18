@@ -1,0 +1,74 @@
+#backbone_arch DhariwalUNet
+#model:latent pfgmpp
+model:
+  base_learning_rate: 4.5e-06
+  target: other.edm.training.networks.EDMLatent
+  params:
+    img_resolution: 64
+    img_channels: 3
+    label_dim: 0
+    first_stage_config:
+      target: taming.models.vqgan.VQModelInterface
+      params:
+        # ckpt_path: logs/2023-07-21T08-52-22_custom_vqgan/checkpoints/last.ckpt
+        ckpt_path: logs/2023-07-25T09-29-54_custom_vqgan_latent_3x64x64/checkpoints/last.ckpt
+        embed_dim: 3
+        n_embed: 1024
+        ddconfig:
+          double_z: false
+          z_channels: 3
+          resolution: 256
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult: [1,1,2]
+          num_res_blocks: 2
+          attn_resolutions: [16]
+          dropout: 0.0
+        lossconfig:
+          target: taming.modules.losses.vqperceptual.VQLPIPSWithDiscriminator
+          params:
+            disc_conditional: False
+            disc_in_channels: 3
+            disc_start: 10000
+            disc_weight: 0.8
+            codebook_weight: 1.0
+    
+    unetconfig: 
+      target: other.edm.training.networks.SongUNet   #network architecture SongUnet ddpmpp
+      params:
+        img_resolution: 64
+        in_channels: 3
+        out_channels: 3
+        label_dim: 0
+        embedding_type: positional
+        encoder_type: standard
+        decoder_type: standard
+        channel_mult_noise: 1
+        resample_filter: [1,1]
+        model_channels: 128
+        channel_mult: [1,2,2,2]
+     
+    lossconfig:
+      target: other.edm.training.loss.EDMLoss
+      loss_caling: 1
+      
+             
+        
+      
+
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 1
+    num_workers: 8
+    train:
+      target: taming.data.faceshq.FFHQTrain
+      params:
+        size: 256
+      
+    validation:
+      target: taming.data.faceshq.FFHQValidation
+      params:
+        size: 256
+   
