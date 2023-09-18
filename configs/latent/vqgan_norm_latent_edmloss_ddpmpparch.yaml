@@ -10,7 +10,7 @@ model:
     first_stage_config:
       target: taming.models.vqgan.VQModelInterface
       params:
-        ckpt_path: logs/2023-07-25T09-29-54_custom_vqgan_latent_3x64x64/checkpoints/last.ckpt
+        ckpt_path: first_stage_model/vqgan_ckpt/last.ckpt
         embed_dim: 3
         n_embed: 1024
         ddconfig:
